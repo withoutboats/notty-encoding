@@ -36,6 +36,31 @@ pub enum Area {
     BelowCursor(bool),
 }
 
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub struct BufferSet {
+    pub eol1: u8,
+    pub eol2: u8,
+    pub eol3: u8,
+    pub intr: u8,
+    pub quit: u8,
+    pub susp: u8,
+}
+
+impl BufferSet {
+
+    pub fn eol(&self, c: char) -> bool {
+        if let '\0'...'\x7f' = c {
+            c as u8 == self.eol1 || c as u8 == self.eol2 || c as u8 == self.eol3
+        } else { false }
+    }
+
+    pub fn signal(&self, c: char) -> bool {
+        if let '\0'...'\x7f' = c {
+            c as u8 == self.intr || c as u8 == self.quit || c as u8 == self.susp
+        } else { false }
+    }
+}
+
 /// A 24-bit rgb color sequence.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub struct Color(pub u8, pub u8, pub u8);
@@ -112,4 +137,3 @@ pub enum Style {
     BgColor(Color),
     BgColorCfg(Option<u8>),
 }
-

@@ -74,6 +74,33 @@ impl Argument for bool {
 
 }
 
+impl Argument for BufferSet {
+
+    fn from_nums<T>(mut args: T, default: Option<BufferSet>) -> Option<BufferSet>
+    where T: Iterator<Item=u32> {
+        let intr = match args.next() { Some(n) => n as u8, None => return default };
+        let quit = match args.next() { Some(n) => n as u8, None => return default };
+        let susp = match args.next() { Some(n) => n as u8, None => return default };
+        let eol1 = match args.next() { Some(n) => n as u8, None => return default };
+        let eol2 = match args.next() { Some(n) => n as u8, None => return default };
+        let eol3 = match args.next() { Some(n) => n as u8, None => return default };
+        Some(BufferSet {
+            eol1: eol1,
+            eol2: eol2,
+            eol3: eol3,
+            intr: intr,
+            quit: quit,
+            susp: susp,
+        })
+    }
+
+    fn encode(&self) -> String {
+        format!("{:x}.{:x}.{:x}.{:x}.{:x}.{:x}", self.intr, self.quit, self.susp, self.eol1,
+                self.eol2, self.eol3)
+    }
+
+}
+
 impl Argument for Color {
 
     fn from_nums<T>(mut args: T, default: Option<Color>) -> Option<Color>
