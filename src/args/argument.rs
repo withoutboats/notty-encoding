@@ -83,11 +83,11 @@ impl Argument for BufferSet {
         let susp = match args.next() { Some(n) => n as u8, None => return default };
         let eol1 = match args.next() { Some(n) => n as u8, None => return default };
         let eol2 = match args.next() { Some(n) => n as u8, None => return default };
-        let eol3 = match args.next() { Some(n) => n as u8, None => return default };
+        let eof  = match args.next() { Some(n) => n as u8, None => return default };
         Some(BufferSet {
             eol1: eol1,
             eol2: eol2,
-            eol3: eol3,
+            eof: eof,
             intr: intr,
             quit: quit,
             susp: susp,
@@ -96,7 +96,7 @@ impl Argument for BufferSet {
 
     fn encode(&self) -> String {
         format!("{:x}.{:x}.{:x}.{:x}.{:x}.{:x}", self.intr, self.quit, self.susp, self.eol1,
-                self.eol2, self.eol3)
+                self.eol2, self.eof)
     }
 
 }

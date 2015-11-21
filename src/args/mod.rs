@@ -40,7 +40,7 @@ pub enum Area {
 pub struct BufferSet {
     pub eol1: u8,
     pub eol2: u8,
-    pub eol3: u8,
+    pub eof: u8,
     pub intr: u8,
     pub quit: u8,
     pub susp: u8,
@@ -48,9 +48,15 @@ pub struct BufferSet {
 
 impl BufferSet {
 
+    pub fn eof(&self, c: char) -> bool {
+        if let '\0'...'\x7f' = c {
+            c as u8 == self.eof
+        } else { false }
+    }
+
     pub fn eol(&self, c: char) -> bool {
         if let '\0'...'\x7f' = c {
-            c as u8 == self.eol1 || c as u8 == self.eol2 || c as u8 == self.eol3
+            c as u8 == self.eol1 || c as u8 == self.eol2 || c as u8 == self.eof
         } else { false }
     }
 
