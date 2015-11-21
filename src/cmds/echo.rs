@@ -1,7 +1,7 @@
-use args::{Argument, BufferSet};
+use args::{Argument, BufferSettings, EchoSettings};
 use cmds::EscCode;
 
-pub struct SetBufferMode(pub Option<BufferSet>);
+pub struct SetBufferMode(pub Option<BufferSettings>);
 
 impl EscCode for SetBufferMode {
     fn opcode() -> &'static str { "84" }
@@ -12,11 +12,13 @@ impl EscCode for SetBufferMode {
     }
 }
 
-pub struct SetEchoMode(pub bool);
+pub struct SetEchoMode(pub Option<EchoSettings>);
 
 impl EscCode for SetEchoMode {
     fn opcode() -> &'static str { "88" }
     fn args(&self) -> Vec<String> {
-        vec![self.0.encode()]
+        if let Some(set) = self.0 {
+            vec![set.encode()]
+        } else { vec![] }
     }
 }

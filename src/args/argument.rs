@@ -74,9 +74,9 @@ impl Argument for bool {
 
 }
 
-impl Argument for BufferSet {
+impl Argument for BufferSettings {
 
-    fn from_nums<T>(mut args: T, default: Option<BufferSet>) -> Option<BufferSet>
+    fn from_nums<T>(mut args: T, default: Option<BufferSettings>) -> Option<BufferSettings>
     where T: Iterator<Item=u32> {
         let intr = match args.next() { Some(n) => n as u8, None => return default };
         let quit = match args.next() { Some(n) => n as u8, None => return default };
@@ -84,7 +84,7 @@ impl Argument for BufferSet {
         let eol1 = match args.next() { Some(n) => n as u8, None => return default };
         let eol2 = match args.next() { Some(n) => n as u8, None => return default };
         let eof  = match args.next() { Some(n) => n as u8, None => return default };
-        Some(BufferSet {
+        Some(BufferSettings {
             eol1: eol1,
             eol2: eol2,
             eof: eof,
@@ -154,6 +154,25 @@ impl Argument for Direction {
         }
     }
 
+}
+
+impl Argument for EchoSettings {
+
+    fn from_nums<T>(mut args: T, default: Option<EchoSettings>) -> Option<EchoSettings>
+    where T: Iterator<Item=u32> {
+        let lerase = match args.next() { Some(n) => n as u8, None => return default };
+        let lnext = match args.next() { Some(n) => n as u8, None => return default };
+        let werase = match args.next() { Some(n) => n as u8, None => return default };
+        Some(EchoSettings {
+            lerase: lerase,
+            lnext: lnext,
+            werase: werase,
+        })
+    }
+
+    fn encode(&self) -> String {
+        format!("{:x}.{:x}.{:x}", self.lerase, self.lnext, self.werase)
+    }
 }
 
 impl Argument for InputMode {

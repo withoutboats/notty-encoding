@@ -37,7 +37,7 @@ pub enum Area {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
-pub struct BufferSet {
+pub struct BufferSettings {
     pub eol1: u8,
     pub eol2: u8,
     pub eof: u8,
@@ -46,7 +46,7 @@ pub struct BufferSet {
     pub susp: u8,
 }
 
-impl BufferSet {
+impl BufferSettings {
 
     pub fn eof(&self, c: char) -> bool {
         if let '\0'...'\x7f' = c {
@@ -96,6 +96,13 @@ impl Direction {
             Direction::Right    => Direction::Left,
         }
     }
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub struct EchoSettings {
+    pub lerase: u8,
+    pub lnext: u8,
+    pub werase: u8,
 }
 
 /// The mode the input processor is in.
