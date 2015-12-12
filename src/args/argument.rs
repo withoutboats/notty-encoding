@@ -1,7 +1,7 @@
 use args::*;
 use args::Area::*;
 use args::Direction::*;
-use args::InputMode::*;
+use args::InputSettings::*;
 use args::Movement::*;
 use args::MediaAlignment::*;
 use args::MediaPosition::*;
@@ -175,9 +175,9 @@ impl Argument for EchoSettings {
     }
 }
 
-impl Argument for InputMode {
+impl Argument for InputSettings {
     
-    fn from_nums<T>(mut args: T, default: Option<InputMode>) -> Option<InputMode>
+    fn from_nums<T>(mut args: T, default: Option<InputSettings>) -> Option<InputSettings>
     where T: Iterator<Item=u32> {
         match args.next() {
             Some(1) => Some(Ansi(false)),
@@ -394,7 +394,7 @@ mod tests {
     use args::*;
     use args::Area::*;
     use args::Direction::*;
-    use args::InputMode::*;
+    use args::InputSettings::*;
     use args::Movement::*;
     use args::MediaAlignment::*;
     use args::MediaPosition::*;

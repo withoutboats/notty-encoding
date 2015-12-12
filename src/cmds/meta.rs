@@ -1,4 +1,4 @@
-use args::{Argument, InputMode};
+use args::{Argument, InputSettings};
 use cmds::EscCode;
 
 pub struct SetTitle(pub String);
@@ -25,7 +25,7 @@ impl EscCode for PopBuffer {
     fn opcode() -> &'static str { "61" }
 }
 
-pub struct SetInputMode(pub InputMode);
+pub struct SetInputMode(pub InputSettings);
 
 impl EscCode for SetInputMode {
     fn opcode() -> &'static str { "80" }

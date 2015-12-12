@@ -107,7 +107,7 @@ pub struct EchoSettings {
 
 /// The mode the input processor is in.
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
-pub enum InputMode {
+pub enum InputSettings {
     /// Ansi-compatible mode, boolean determines of "application" mode or not.
     Ansi(bool),
     /// Notty mode.
