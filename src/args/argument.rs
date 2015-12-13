@@ -186,6 +186,7 @@ impl Argument for InputSettings {
             Some(4) => EchoSettings::from_nums(args.by_ref(), None).and_then(|echo| {
                 BufferSettings::from_nums(args, None).map(|buffer| LineBufferEcho(echo, buffer))
             }),
+            Some(5) => EchoSettings::from_nums(args, None).map(ScreenEcho),
             _       => default,
         }
     }
@@ -196,6 +197,7 @@ impl Argument for InputSettings {
             Notty(_)                        => String::from("2"),
             LineEcho(echo)                  => format!("3.{}", echo.encode()),
             LineBufferEcho(echo, buffer)    => format!("4.{}.{}", echo.encode(), buffer.encode()),
+            ScreenEcho(echo)                => format!("5.{}", echo.encode()),
         }
     }
 

@@ -114,6 +114,7 @@ pub enum InputSettings {
     Notty(()),
     LineEcho(EchoSettings),
     LineBufferEcho(EchoSettings, BufferSettings),
+    ScreenEcho(EchoSettings),
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
