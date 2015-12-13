@@ -112,6 +112,8 @@ pub enum InputSettings {
     Ansi(bool),
     /// Notty mode.
     Notty(()),
+    LineEcho(EchoSettings),
+    LineBufferEcho(EchoSettings, BufferSettings),
 }
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]

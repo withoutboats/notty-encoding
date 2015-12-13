@@ -182,14 +182,20 @@ impl Argument for InputSettings {
         match args.next() {
             Some(1) => Some(Ansi(false)),
             Some(2) => Some(Notty(())),
+            Some(3) => EchoSettings::from_nums(args, None).map(LineEcho),
+            Some(4) => EchoSettings::from_nums(args.by_ref(), None).and_then(|echo| {
+                BufferSettings::from_nums(args, None).map(|buffer| LineBufferEcho(echo, buffer))
+            }),
             _       => default,
         }
     }
 
     fn encode(&self) -> String {
         match *self {
-            Ansi(_)     => String::from("1"),
-            Notty(_)    => String::from("2"),
+            Ansi(_)                         => String::from("1"),
+            Notty(_)                        => String::from("2"),
+            LineEcho(echo)                  => format!("3.{}", echo.encode()),
+            LineBufferEcho(echo, buffer)    => format!("4.{}.{}", echo.encode(), buffer.encode()),
         }
     }
 
@@ -489,7 +495,7 @@ mod tests {
     }
 
     #[test]
-    fn input_mode_argument() {
+    fn input_settings_argument() {
         run_test("1;2", &[Ansi(false), Notty(())]);
     }
 
