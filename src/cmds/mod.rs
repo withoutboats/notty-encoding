@@ -29,7 +29,6 @@ pub trait EscCode {
 
 }
 
-mod echo;
 mod erase;
 mod meta;
 mod movement;
@@ -37,7 +36,6 @@ mod put;
 mod style;
 mod tooltip;
 
-pub use self::echo::{SetEchoMode, SetBufferMode};
 pub use self::erase::{Erase, RemoveChars, RemoveRows, InsertBlank, InsertRows};
 pub use self::meta::{SetTitle, PushBuffer, PopBuffer, SetInputMode};
 pub use self::movement::{Move, ScrollScreen};
