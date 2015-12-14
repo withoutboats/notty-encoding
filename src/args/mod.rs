@@ -112,7 +112,6 @@ pub enum InputSettings {
     Ansi(bool),
     /// Notty mode.
     Notty(()),
-    LineEcho(EchoSettings),
     LineBufferEcho(EchoSettings, BufferSettings),
     ScreenEcho(EchoSettings),
 }

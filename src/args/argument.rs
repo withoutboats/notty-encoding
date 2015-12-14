@@ -182,11 +182,10 @@ impl Argument for InputSettings {
         match args.next() {
             Some(1) => Some(Ansi(false)),
             Some(2) => Some(Notty(())),
-            Some(3) => EchoSettings::from_nums(args, None).map(LineEcho),
-            Some(4) => EchoSettings::from_nums(args.by_ref(), None).and_then(|echo| {
+            Some(3) => EchoSettings::from_nums(args.by_ref(), None).and_then(|echo| {
                 BufferSettings::from_nums(args, None).map(|buffer| LineBufferEcho(echo, buffer))
             }),
-            Some(5) => EchoSettings::from_nums(args, None).map(ScreenEcho),
+            Some(4) => EchoSettings::from_nums(args, None).map(ScreenEcho),
             _       => default,
         }
     }
@@ -195,9 +194,8 @@ impl Argument for InputSettings {
         match *self {
             Ansi(_)                         => String::from("1"),
             Notty(_)                        => String::from("2"),
-            LineEcho(echo)                  => format!("3.{}", echo.encode()),
-            LineBufferEcho(echo, buffer)    => format!("4.{}.{}", echo.encode(), buffer.encode()),
-            ScreenEcho(echo)                => format!("5.{}", echo.encode()),
+            LineBufferEcho(echo, buffer)    => format!("3.{}.{}", echo.encode(), buffer.encode()),
+            ScreenEcho(echo)                => format!("4.{}", echo.encode()),
         }
     }
 
