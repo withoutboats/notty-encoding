@@ -37,7 +37,7 @@ mod style;
 mod tooltip;
 
 pub use self::erase::{Erase, RemoveChars, RemoveRows, InsertBlank, InsertRows};
-pub use self::meta::{SetTitle, PushBuffer, PopBuffer, SetInputMode};
+pub use self::meta::{SetTitle, PushBuffer, PopBuffer, SetInputMode, HoldForBuffer};
 pub use self::movement::{Move, ScrollScreen};
 pub use self::put::{PutMedia, PutMediaAt};
 pub use self::style::{SetTextStyle, DefaultTextStyle, SetCursorStyle, DefaultCursorStyle,

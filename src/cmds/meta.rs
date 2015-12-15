@@ -33,3 +33,9 @@ impl EscCode for SetInputMode {
         vec![self.0.encode()]
     }
 }
+
+pub struct HoldForInput;
+
+impl EscCode for HoldForInput {
+    fn opcode() -> &'static str { "87" }
+}
