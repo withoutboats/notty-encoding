@@ -2,3 +2,6 @@
 name = "notty-encoding"
 version = "0.1.0"
 authors = ["Without Boats <woboats@gmail.com>"]
+
+[dependencies]
+base64 = "0.1.1"

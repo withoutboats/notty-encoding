@@ -10,21 +10,21 @@ pub trait EscCode {
         Vec::new()
     }
 
-    fn encode(&self) -> Vec<u8> {
-        let mut vec = vec![0x1b, b'{'];
-        vec.extend(Self::opcode().as_bytes());
+    fn encode(&self) -> String {
+        let mut string = String::from("\x1b_[");
+        string.push_str(Self::opcode());
         for arg in self.args() {
-            vec.push(b';');
-            vec.extend(arg.as_bytes());
+            string.push(';');
+            string.push_str(&arg);
         }
         for attachment in self.attachments() {
-            vec.push(b'{');
-            vec.extend(format!("{:x}", attachment.len()).as_bytes());
-            vec.push(b';');
-            vec.extend(attachment);
+            string.push('#');
+            string.push_str(unsafe {
+                &String::from_utf8_unchecked(::base64::u8en(&attachment).unwrap())
+            });
         }
-        vec.push(b'}');
-        vec
+        string.push_str("\u{9c}");
+        string
     }
 
 }
@@ -37,7 +37,7 @@ mod style;
 mod tooltip;
 
 pub use self::erase::{Erase, RemoveChars, RemoveRows, InsertBlank, InsertRows};
-pub use self::meta::{SetTitle, PushBuffer, PopBuffer, SetInputMode, HoldForBuffer};
+pub use self::meta::{SetTitle, PushBuffer, PopBuffer, SetInputMode, HoldForInput};
 pub use self::movement::{Move, ScrollScreen};
 pub use self::put::{PutMedia, PutMediaAt};
 pub use self::style::{SetTextStyle, DefaultTextStyle, SetCursorStyle, DefaultCursorStyle,

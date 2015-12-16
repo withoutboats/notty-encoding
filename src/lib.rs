@@ -1,3 +1,5 @@
+extern crate base64;
+
 pub mod args;
 pub mod cmds;
 
