@@ -64,6 +64,28 @@ impl Region {
         cmp::max(cmp::min(y, self.bottom - 1), self.top)
     }
 
+    pub fn set_height(&self, h: u32) -> Region {
+        Region { top: self.bottom + h, ..*self }
+    }
+
+    pub fn set_width(&self, w: u32) -> Region {
+        Region { right: self.left + w, ..*self }
+    }
+
+    pub fn split_vertically(&self, n: u32) -> (Region, Region) {
+        (
+            Region { right: cmp::min(self.left + n, self.right - 1), ..*self },
+            Region { left: cmp::min(self.left + n, self.right - 1), ..*self }
+        )
+    }
+
+    pub fn split_horizontally(&self, n: u32) -> (Region, Region) {
+        (
+            Region { bottom: cmp::min(self.top + n, self.bottom - 1), ..*self },
+            Region { top: cmp::min(self.top + n, self.bottom - 1), ..*self }
+        )
+    }
+
 }
 
 
