@@ -72,18 +72,50 @@ impl Region {
         Region { right: self.left + w, ..*self }
     }
 
-    pub fn split_vertically(&self, n: u32) -> (Region, Region) {
-        (
-            Region { right: cmp::min(self.left + n, self.right - 1), ..*self },
-            Region { left: cmp::min(self.left + n, self.right - 1), ..*self }
-        )
-    }
-
-    pub fn split_horizontally(&self, n: u32) -> (Region, Region) {
-        (
-            Region { bottom: cmp::min(self.top + n, self.bottom - 1), ..*self },
-            Region { top: cmp::min(self.top + n, self.bottom - 1), ..*self }
-        )
+    pub fn move_to_contain(&self, coords: Coords) -> Region {
+        match (coords.x <= self.left, self.right <= coords.x,
+               coords.y <= self.top, coords.y <= self.bottom) {
+            // Left and above
+            (true, false, true, false)  =>
+                Region::new(coords.x, coords.y, coords.x + self.width(), coords.x + self.height()),
+            // Left and below
+            (true, false, false, true)  =>
+                Region::new(coords.x,
+                            (coords.y + 1).saturating_sub(self.height()),
+                            coords.x + self.width(),
+                            (coords.y + 1).saturating_sub(self.height()) + self.height()),
+            // Right and above
+            (false, true, true, false)  =>
+                Region::new((coords.x + 1).saturating_sub(self.width()),
+                            coords.y,
+                            (coords.x + 1).saturating_sub(self.width()) + self.width(),
+                            coords.y + self.height()),
+            // Right and below
+            (false, true, false, true)  =>
+                Region::new((coords.x + 1).saturating_sub(self.width()),
+                            (coords.y + 1).saturating_sub(self.height()),
+                            (coords.x + 1).saturating_sub(self.width()) + self.width(),
+                            (coords.y + 1).saturating_sub(self.height()) + self.height()),
+            // Left only
+            (true, false, false, false) =>
+                Region::new(coords.x, self.top, coords.x + self.width(), self.bottom),
+            // Right only
+            (false, true, false, false) =>
+                Region::new((coords.x + 1).saturating_sub(self.width()),
+                            self.top,
+                            (coords.x + 1).saturating_sub(self.width()) + self.width(),
+                            self.bottom),
+            // Above only
+            (false, false, true, false) =>
+                Region::new(self.left, coords.y, self.right, coords.y + self.height()),
+            // Below only
+            (false, false, false, true) =>
+                Region::new(self.left,
+                            (coords.y + 1).saturating_sub(self.height()),
+                            self.right,
+                            (coords.y + 1).saturating_sub(self.height()) + self.height()),
+            _                           => *self
+        }
     }
 
 }
