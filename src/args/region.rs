@@ -64,6 +64,10 @@ impl Region {
         cmp::max(cmp::min(y, self.bottom - 1), self.top)
     }
 
+    pub fn offset(&self, Coords {x, y}: Coords) -> Coords {
+        Coords { x: x.saturating_sub(self.left), y: y.saturating_sub(self.right) }
+    }
+
     pub fn set_height(&self, h: u32) -> Region {
         Region { top: self.bottom + h, ..*self }
     }
