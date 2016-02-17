@@ -12,7 +12,14 @@ pub enum Movement {
     To(Direction, u32, bool),
     ToEdge(Direction),
     IndexTo(Direction, u32),
-    Tab(Direction, u32, bool),
+    Tab(
+        /// Direction of the tab character.
+        Direction,
+        /// Number of tab stops "long" the movement should be.
+        u32,
+        /// Whether or not the movement should wrap when it reaches the end of the screen.
+        bool
+    ),
     Column(u32),
     Row(u32),
     PreviousLine(u32),
