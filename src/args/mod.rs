@@ -116,12 +116,12 @@ pub enum InputSettings {
     ScreenEcho(EchoSettings),
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum MediaAlignment {
     LeftTop, Center, RightBottom
 }
 
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub enum MediaPosition {
     Display(MediaAlignment, MediaAlignment),
     Fill,
