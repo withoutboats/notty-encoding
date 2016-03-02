@@ -6,6 +6,9 @@ pub use self::argument::Argument;
 pub use self::movement::Movement;
 pub use self::region::Region;
 
+use std::fmt;
+use std::ops::Index;
+
 /// An abstractly defined section of the grid.
 ///
 /// Areas can be defined in terms of the current cursor position and the bounds of the grid. They
@@ -70,6 +73,57 @@ impl BufferSettings {
 /// A 24-bit rgb color sequence.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub struct Color(pub u8, pub u8, pub u8);
+
+#[derive(Debug)]
+pub enum PaletteError {
+    IncorrectSize(i32),
+}
+
+impl fmt::Display for PaletteError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            PaletteError::IncorrectSize(n) if n > 0 => {
+                write!(f, "{} too many 'Color' specified to define a Palette.",
+                       n.abs())
+            },
+            PaletteError::IncorrectSize(n) if n < 0 => {
+                write!(f, "{} too few 'Color' specified to define a Palette.",
+                       n.abs())
+            },
+            PaletteError::IncorrectSize(_) => {
+                write!(f, "Unspecified Palette size error.",)
+            },
+        }
+    }
+}
+
+#[derive(Clone, Eq, PartialEq)]
+pub struct Palette {
+    colors: Vec<Color>,
+}
+
+impl Palette {
+    pub fn new_from_slice(colors: &[Color]) -> Result<Palette, PaletteError> {
+        let slice_length = colors.len();
+        if slice_length - 256 != 0 {
+            Err(PaletteError::IncorrectSize(slice_length as i32 - 256))
+        } else {
+            let mut v = Vec::with_capacity(256);
+            for color in colors {
+                v.push(color.clone());
+            }
+            Ok(Palette{colors: v.clone()})
+        }
+    }
+}
+
+impl Index<usize> for Palette {
+    type Output = Color;
+
+    fn index<'a>(&'a self, index: usize) -> &'a Color {
+        &self.colors[index]
+    }
+}
 
 /// A corodinate pair.
 #[derive(Copy, Clone, Default, Debug, Eq, PartialEq, Hash)]
