@@ -65,7 +65,7 @@ impl Region {
     }
 
     pub fn offset(&self, Coords {x, y}: Coords) -> Coords {
-        Coords { x: x.saturating_sub(self.left), y: y.saturating_sub(self.right) }
+        Coords { x: x.saturating_sub(self.left), y: y.saturating_sub(self.top) }
     }
 
     pub fn set_height(&self, h: u32) -> Region {
