@@ -68,17 +68,9 @@ impl Region {
         Coords { x: x.saturating_sub(self.left), y: y.saturating_sub(self.top) }
     }
 
-    pub fn set_height(&self, h: u32) -> Region {
-        Region { top: self.bottom + h, ..*self }
-    }
-
-    pub fn set_width(&self, w: u32) -> Region {
-        Region { right: self.left + w, ..*self }
-    }
-
     pub fn move_to_contain(&self, coords: Coords) -> Region {
-        match (coords.x <= self.left, self.right <= coords.x,
-               coords.y <= self.top, coords.y <= self.bottom) {
+        match (coords.x < self.left, self.right <= coords.x,
+               coords.y < self.top, self.bottom <= coords.y) {
             // Left and above
             (true, false, true, false)  =>
                 Region::new(coords.x, coords.y, coords.x + self.width(), coords.x + self.height()),
