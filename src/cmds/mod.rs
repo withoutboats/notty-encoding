@@ -1,6 +1,6 @@
 pub trait EscCode {
 
-    fn opcode() -> &'static str;
+    const OPCODE: u16;
 
     fn args(&self) -> Vec<String> {
         Vec::new()
@@ -11,8 +11,7 @@ pub trait EscCode {
     }
 
     fn encode(&self) -> String {
-        let mut string = String::from("\x1b_[");
-        string.push_str(Self::opcode());
+        let mut string = format!("\x1b_[{:x}", Self::OPCODE);
         for arg in self.args() {
             string.push(';');
             string.push_str(&arg);
@@ -23,8 +22,7 @@ pub trait EscCode {
                 &String::from_utf8_unchecked(::base64::u8en(&attachment).unwrap())
             });
         }
-        string.push_str("\u{9c}");
-        string
+        string + "\u{9c}"
     }
 
 }

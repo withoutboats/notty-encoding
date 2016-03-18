@@ -13,7 +13,7 @@ impl Move {
 }
 
 impl EscCode for Move {
-    fn opcode() -> &'static str { "18" }
+    const OPCODE: u16 = 0x18;
     fn args(&self) -> Vec<String> {
         vec![self.movement.encode()]
     }
@@ -34,7 +34,7 @@ impl ScrollScreen {
 }
 
 impl EscCode for ScrollScreen {
-    fn opcode() -> &'static str { "19" }
+    const OPCODE: u16 = 0x19;
     fn args(&self) -> Vec<String> {
         vec![self.dir.encode(), self.n.encode()]
     }

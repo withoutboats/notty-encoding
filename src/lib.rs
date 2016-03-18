@@ -1,3 +1,4 @@
+#![feature(associated_consts)]
 extern crate base64;
 
 pub mod args;

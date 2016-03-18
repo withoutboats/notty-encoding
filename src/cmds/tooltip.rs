@@ -4,7 +4,7 @@ use cmds::EscCode;
 pub struct AddToolTip(pub Coords, pub String);
 
 impl EscCode for AddToolTip {
-    fn opcode() -> &'static str { "50" }
+    const OPCODE: u16 = 0x50;
     fn args(&self) -> Vec<String> {
         vec![self.0.encode()]
     }
@@ -19,7 +19,7 @@ pub struct AddDropDown {
 }
 
 impl EscCode for AddDropDown {
-    fn opcode() -> &'static str { "51" }
+    const OPCODE: u16 = 0x51;
     fn args(&self) -> Vec<String> {
         vec![self.coords.encode()]
     }
@@ -31,7 +31,7 @@ impl EscCode for AddDropDown {
 pub struct RemoveToolTip(pub Coords);
 
 impl EscCode for RemoveToolTip {
-    fn opcode() -> &'static str { "54" }
+    const OPCODE: u16 = 0x54;
     fn args(&self) -> Vec<String> {
         vec![self.0.encode()]
     }

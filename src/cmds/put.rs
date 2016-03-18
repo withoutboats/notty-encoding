@@ -23,7 +23,7 @@ impl PutMedia {
 }
 
 impl EscCode for PutMedia {
-    fn opcode() -> &'static str { "14" }
+    const OPCODE: u16 = 0x14;
     fn args(&self) -> Vec<String> {
         vec![self.width.encode(), self.height.encode(), self.position.encode()]
     }
@@ -54,7 +54,7 @@ impl PutMediaAt {
     }
 }
 impl EscCode for PutMediaAt {
-    fn opcode() -> &'static str { "15" }
+    const OPCODE: u16 = 0x15;
     fn args(&self) -> Vec<String> {
         vec![self.coords.encode(), self.width.encode(), self.height.encode(),
              self.position.encode()]

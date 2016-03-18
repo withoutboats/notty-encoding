@@ -4,7 +4,7 @@ use cmds::EscCode;
 pub struct SetTitle(pub String);
 
 impl EscCode for SetTitle {
-    fn opcode() -> &'static str { "40" }
+    const OPCODE: u16 = 0x40;
     fn attachments(&self) -> Vec<Vec<u8>> {
         vec![self.0.clone().into_bytes()]
     }
@@ -13,7 +13,7 @@ impl EscCode for SetTitle {
 pub struct PushBuffer(pub bool);
 
 impl EscCode for PushBuffer {
-    fn opcode() -> &'static str { "60" }
+    const OPCODE: u16 = 0x60;
     fn args(&self) -> Vec<String> {
         vec![self.0.encode()]
     }
@@ -22,13 +22,13 @@ impl EscCode for PushBuffer {
 pub struct PopBuffer;
 
 impl EscCode for PopBuffer {
-    fn opcode() -> &'static str { "61" }
+    const OPCODE: u16 = 0x61;
 }
 
 pub struct SetInputMode(pub InputSettings);
 
 impl EscCode for SetInputMode {
-    fn opcode() -> &'static str { "80" }
+    const OPCODE: u16 = 0x80;
     fn args(&self) -> Vec<String> {
         vec![self.0.encode()]
     }
@@ -37,5 +37,5 @@ impl EscCode for SetInputMode {
 pub struct HoldForInput;
 
 impl EscCode for HoldForInput {
-    fn opcode() -> &'static str { "87" }
+    const OPCODE: u16 = 0x87;
 }
