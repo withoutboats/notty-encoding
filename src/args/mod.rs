@@ -136,6 +136,24 @@ impl Default for MediaPosition {
     }
 }
 
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum ResizeRule {
+    Percentage,
+    MaxLeftTop,
+    MaxRightBottom,
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum SaveGrid {
+    Left, Right
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub enum SplitKind {
+    Horizontal(u32),
+    Vertical(u32),
+}
+
 /// Set rich text styles. Booleans represent on or off.
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum Style {

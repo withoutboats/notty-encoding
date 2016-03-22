@@ -8,10 +8,10 @@ use args::MediaPosition::*;
 use args::Style::*;
 
 pub trait Argument: Copy + Eq {
-    fn from_nums<T>(T, Option<Self>) -> Option<Self> where T: Iterator<Item=u32>;
+    fn from_nums<T>(T, Option<Self>) -> Option<Self> where T: Iterator<Item=u64>;
     fn encode(&self) -> String;
     fn decode(args: Option<&str>, default: Option<Self>) -> Option<Self> {
-        let iter = args.iter().flat_map(|s| s.split('.')).flat_map(|s| u32::from_str_radix(s, 16));
+        let iter = args.iter().flat_map(|s| s.split('.')).flat_map(|s| u64::from_str_radix(s, 16));
         Self::from_nums(iter, default)
     }
 }
@@ -19,7 +19,7 @@ pub trait Argument: Copy + Eq {
 impl Argument for Area {
 
     fn from_nums<T>(mut args: T, default: Option<Area>) -> Option<Area>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             Some(1) => Some(CursorCell),
             Some(2) => Some(CursorRow),
@@ -28,11 +28,11 @@ impl Argument for Area {
             Some(5) => Coords::from_nums(args, None).map(CursorBound),
             Some(6) => Region::from_nums(args, None).map(Bound).or(Some(WholeScreen)),
             Some(7) => match (args.next(), args.next()) {
-                (Some(top), Some(bottom))   => Some(Rows(top, bottom)),
+                (Some(top), Some(bottom))   => Some(Rows(top as u32, bottom as u32)),
                 _                           => Some(WholeScreen),
             },
             Some(8) => match (args.next(), args.next()) {
-                (Some(top), Some(bottom))   => Some(Columns(top, bottom)),
+                (Some(top), Some(bottom))   => Some(Columns(top as u32, bottom as u32)),
                 _                           => Some(WholeScreen),
             },
             Some(9) => bool::from_nums(args, Some(true)).map(BelowCursor),
@@ -60,7 +60,7 @@ impl Argument for Area {
 impl Argument for bool {
 
     fn from_nums<T>(mut args: T, default: Option<bool>) -> Option<bool>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         args.next().map_or(default, |n| match n {
             0   => Some(false),
             1   => Some(true),
@@ -77,7 +77,7 @@ impl Argument for bool {
 impl Argument for BufferSettings {
 
     fn from_nums<T>(mut args: T, default: Option<BufferSettings>) -> Option<BufferSettings>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         let intr = match args.next() { Some(n) => n as u8, None => return default };
         let quit = match args.next() { Some(n) => n as u8, None => return default };
         let susp = match args.next() { Some(n) => n as u8, None => return default };
@@ -104,7 +104,7 @@ impl Argument for BufferSettings {
 impl Argument for Color {
 
     fn from_nums<T>(mut args: T, default: Option<Color>) -> Option<Color>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match (args.next(), args.next(), args.next()) {
             (Some(r), Some(g), Some(b)) => Some(Color(r as u8, g as u8, b as u8)),
             _                           => default,
@@ -119,9 +119,9 @@ impl Argument for Color {
 impl Argument for Coords {
 
     fn from_nums<T>(mut args: T, default: Option<Coords>) -> Option<Coords>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match (args.next(), args.next()) {
-            (Some(x), Some(y))  => Some(Coords {x:x, y:y}),
+            (Some(x), Some(y))  => Some(Coords { x: x as u32, y: y as u32 }),
             _                   => default,
         }
     }
@@ -135,7 +135,7 @@ impl Argument for Coords {
 impl Argument for Direction {
 
     fn from_nums<T>(mut args: T, default: Option<Direction>) -> Option<Direction>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             Some(1) => Some(Up),
             Some(2) => Some(Down),
@@ -159,7 +159,7 @@ impl Argument for Direction {
 impl Argument for EchoSettings {
 
     fn from_nums<T>(mut args: T, default: Option<EchoSettings>) -> Option<EchoSettings>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         let lerase = match args.next() { Some(n) => n as u8, None => return default };
         let lnext = match args.next() { Some(n) => n as u8, None => return default };
         let werase = match args.next() { Some(n) => n as u8, None => return default };
@@ -178,7 +178,7 @@ impl Argument for EchoSettings {
 impl Argument for InputSettings {
     
     fn from_nums<T>(mut args: T, default: Option<InputSettings>) -> Option<InputSettings>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             Some(1) => Some(Ansi(false)),
             Some(2) => Some(Notty(())),
@@ -204,7 +204,7 @@ impl Argument for InputSettings {
 impl Argument for MediaAlignment {
 
     fn from_nums<T>(mut args: T, default: Option<MediaAlignment>) -> Option<MediaAlignment>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             Some(1) => Some(LeftTop),
             Some(2) => Some(Center),
@@ -226,7 +226,7 @@ impl Argument for MediaAlignment {
 impl Argument for MediaPosition {
 
     fn from_nums<T>(mut args: T, default: Option<MediaPosition>) -> Option<MediaPosition>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             Some(1) => {
                 let horizontal = MediaAlignment::from_nums(args.by_ref(), Some(LeftTop)).unwrap();
@@ -256,7 +256,7 @@ impl Argument for MediaPosition {
 impl Argument for Movement {
 
     fn from_nums<T>(mut args: T, default: Option<Movement>) -> Option<Movement>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             // Position
             Some(0x1)   => Coords::from_nums(args, Some(Coords {x: 0, y: 0})).map(Position),
@@ -326,9 +326,10 @@ impl Argument for Movement {
 impl Argument for Region {
 
     fn from_nums<T>(mut args: T, default: Option<Region>) -> Option<Region>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match (args.next(), args.next(), args.next(), args.next()) {
-            (Some(l), Some(t), Some(r), Some(b)) => Some(Region::new(l, t, r, b)),
+            (Some(l), Some(t), Some(r), Some(b)) => Some(Region::new(l as u32, t as u32,
+                                                                     r as u32, b as u32)),
             _                                    => default
         }
     }
@@ -339,10 +340,71 @@ impl Argument for Region {
 
 }
 
+impl Argument for ResizeRule {
+
+    fn from_nums<T>(mut args: T, default: Option<ResizeRule>) -> Option<ResizeRule>
+    where T: Iterator<Item=u64> {
+        args.next().and_then(|arg| match arg {
+            0 => Some(ResizeRule::Percentage),
+            1 => Some(ResizeRule::MaxLeftTop),
+            2 => Some(ResizeRule::MaxRightBottom),
+            _ => None
+        }).or(default)
+    }
+
+    fn encode(&self) -> String {
+        match *self {
+            ResizeRule::Percentage      => String::from("0"),
+            ResizeRule::MaxLeftTop      => String::from("1"),
+            ResizeRule::MaxRightBottom  => String::from("2"),
+        }
+    }
+
+}
+
+impl Argument for SaveGrid {
+
+    fn from_nums<T>(mut args: T, default: Option<SaveGrid>) -> Option<SaveGrid>
+    where T: Iterator<Item=u64> {
+        args.next().and_then(|arg| match arg {
+            0 => Some(SaveGrid::Left),
+            1 => Some(SaveGrid::Right),
+            _ => None
+        }).or(default)
+    }
+
+    fn encode(&self) -> String {
+        match *self {
+            SaveGrid::Left  => String::from("0"),
+            SaveGrid::Right => String::from("1"),
+        }
+    }
+
+}
+
+impl Argument for SplitKind {
+    fn from_nums<T>(mut args: T, default: Option<SplitKind>) -> Option<SplitKind>
+    where T: Iterator<Item=u64> {
+        match (args.next(), args.next()) {
+            (Some(0), Some(n))  => Some(SplitKind::Horizontal(n as u32)),
+            (Some(1), Some(n))  => Some(SplitKind::Vertical(n as u32)),
+            (None, None)        => default,
+            _                   => None,
+        }
+    }
+
+    fn encode(&self) -> String {
+        match *self {
+            SplitKind::Horizontal(n)    => format!("0.{:x}", n),
+            SplitKind::Vertical(n)      => format!("1.{:x}", n),
+        }
+    }
+}
+
 impl Argument for Style {
     
     fn from_nums<T>(mut args: T, default: Option<Style>) -> Option<Style>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
         match args.next() {
             Some(0x1)   => match args.next() {
                 Some(0)         => Some(Underline(0)),
@@ -386,7 +448,17 @@ impl Argument for Style {
 
 impl Argument for u32 {
     fn from_nums<T>(mut args: T, default: Option<u32>) -> Option<u32>
-    where T: Iterator<Item=u32> {
+    where T: Iterator<Item=u64> {
+        args.next().map(|n| n as u32).or(default)
+    }
+    fn encode(&self) -> String {
+        format!("{:x}", self)
+    }
+}
+
+impl Argument for u64 {
+    fn from_nums<T>(mut args: T, default: Option<u64>) -> Option<u64>
+    where T: Iterator<Item=u64> {
         args.next().or(default)
     }
     fn encode(&self) -> String {

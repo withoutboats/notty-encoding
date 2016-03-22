@@ -1,6 +1,8 @@
 use std::cmp;
 
-use args::Coords;
+use args::{Coords, SplitKind, ResizeRule};
+use args::SplitKind::*;
+use args::ResizeRule::*;
 
 /// A concrete, rectangular region of the screen.
 ///
@@ -20,8 +22,8 @@ impl Region {
     pub fn new(x1: u32, y1: u32, x2: u32, y2: u32) -> Region {
         let (left, right) = (cmp::min(x1, x2), cmp::max(x1, x2));
         let (top, bottom) = (cmp::min(y1, y2), cmp::max(y1, y2));
-        assert!(right > 0);
-        assert!(bottom > 0);
+        assert!(right > left);
+        assert!(bottom > top);
         Region {
             left: left,
             top: top,
@@ -111,6 +113,27 @@ impl Region {
                             self.right,
                             (coords.y + 1).saturating_sub(self.height()) + self.height()),
             _                           => *self
+        }
+    }
+
+    pub fn split(self, kind: SplitKind, rule: ResizeRule) -> (SplitKind, Region, Region) {
+        match (kind, rule) {
+            (Horizontal(n), MaxLeftTop) | (Horizontal(n), Percentage)   => {
+                let n = cmp::min(self.top + n, self.bottom - 1);
+                (Horizontal(n), Region { bottom: n, ..self }, Region { top: n, ..self })
+            }
+            (Horizontal(n), MaxRightBottom)                             => {
+                let n = cmp::min(n, cmp::max(self.bottom.saturating_sub(n), self.top + 1));
+                (Horizontal(n), Region { bottom: n, ..self }, Region { top: n, ..self })
+            }
+            (Vertical(n), MaxLeftTop) | (Vertical(n), Percentage)       => {
+                let n = cmp::min(self.left + n, self.right - 1);
+                (Vertical(n), Region { right: n, ..self }, Region { left: n, ..self })
+            }
+            (Vertical(n), MaxRightBottom)                               => {
+                let n = cmp::min(n, cmp::max(self.right.saturating_sub(n), self.left + 1));
+                (Vertical(n), Region { right: n, ..self }, Region { left: n, ..self })
+            }
         }
     }
 

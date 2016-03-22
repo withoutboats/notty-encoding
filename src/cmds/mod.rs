@@ -61,12 +61,15 @@ macro_rules! encode_args {
 mod erase;
 mod meta;
 mod movement;
+mod panel;
 mod put;
 mod style;
 mod tooltip;
 
 pub use self::erase::{Erase, RemoveChars, RemoveRows, InsertBlank, InsertRows};
-pub use self::meta::{SetTitle, PushBuffer, PopBuffer, SetInputMode, HoldForInput};
+pub use self::meta::{SetTitle, SetInputMode, HoldForInput};
+pub use self::panel::{PushPanel, PopPanel, SplitPanel, UnsplitPanel, AdjustPanelSplit,
+                      RotateSectionDown, RotateSectionUp, SwitchActiveSection};
 pub use self::movement::{Move, ScrollScreen};
 pub use self::put::{PutMedia, PutMediaAt};
 pub use self::style::{SetTextStyle, DefaultTextStyle, SetCursorStyle, DefaultCursorStyle,

@@ -11,21 +11,7 @@ impl EscCode for SetTitle {
     }
 }
 
-pub struct PushBuffer(pub bool);
-
-impl EscCode for PushBuffer {
-    const OPCODE: u16 = 0x60;
-    fn args(&self) -> Vec<String> {
-        vec![self.0.encode()]
-    }
-}
-
-pub struct PopBuffer;
-
-impl EscCode for PopBuffer {
-    const OPCODE: u16 = 0x61;
-}
-
+/// Set the input mode for the terminal.
 pub struct SetInputMode(pub InputSettings);
 
 impl EscCode for SetInputMode {
