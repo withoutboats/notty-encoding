@@ -3,6 +3,7 @@ extern crate base64;
 
 pub mod args;
 pub mod cmds;
+pub mod client;
 
 pub enum MediaFormat {
     Png, Gif, Jpeg,
