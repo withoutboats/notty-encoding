@@ -27,6 +27,37 @@ pub trait EscCode {
 
 }
 
+macro_rules! encode_args {
+    (? $arg:expr, $($rest:tt)*) => {{
+        encode_args!(Vec::<String>::new() => ? $arg, $($rest)*)
+    }};
+    (? $arg:expr) => {{
+        encode_args!(Vec::<String>::new() => ? $arg)
+    }};
+    ($arg:expr, $($rest:tt)*) => {{
+        encode_args!(Vec::<String>::new() => $arg, $($rest)*)
+    }};
+    ($arg:expr) => {{
+        encode_args!(Vec::<String>::new() => $arg)
+    }};
+    ($vec:expr => ? $arg:expr, $($rest:tt)*) => {{
+        $arg.map(|arg| $vec.push(arg.encode()));
+        encode_args!($vec => $($rest)*)
+    }};
+    ($vec:expr => ? $arg:expr) => {{
+        $arg.map(|arg| $vec.push(arg.encode()));
+        $vec
+    }};
+    ($vec:expr => $arg:expr, $($rest:tt)*) => {{
+        $vec.push($arg.encode());
+        encode_args!($vec => $($rest)*)
+    }};
+    ($vec:expr => $arg:expr) => {{
+        $vec.push($arg.encode());
+        $vec
+    }};
+}
+
 mod erase;
 mod meta;
 mod movement;

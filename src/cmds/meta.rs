@@ -1,6 +1,7 @@
 use args::{Argument, InputSettings};
 use cmds::EscCode;
 
+/// Set the title of the screen.
 pub struct SetTitle(pub String);
 
 impl EscCode for SetTitle {
@@ -30,10 +31,11 @@ pub struct SetInputMode(pub InputSettings);
 impl EscCode for SetInputMode {
     const OPCODE: u16 = 0x80;
     fn args(&self) -> Vec<String> {
-        vec![self.0.encode()]
+        encode_args![self.0]
     }
 }
 
+/// In local echo mode, do not process non-input commands until input has been sent.
 pub struct HoldForInput;
 
 impl EscCode for HoldForInput {
