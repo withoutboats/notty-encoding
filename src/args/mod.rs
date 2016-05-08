@@ -67,9 +67,21 @@ impl BufferSettings {
     }
 }
 
-/// A 24-bit rgb color sequence.
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
-pub struct Color(pub u8, pub u8, pub u8);
+pub enum Color {
+    /// The default color for this item.
+    Default,
+    /// An index into the 256-member provided color palette.
+    Palette(u8),
+    /// A 24-bit rgb color triple.
+    True(u8, u8, u8),
+}
+
+impl Default for Color {
+    fn default() -> Color {
+        Color::Default
+    }
+}
 
 /// A corodinate pair.
 #[derive(Copy, Clone, Default, Debug, Eq, PartialEq, Hash)]
@@ -166,7 +178,5 @@ pub enum Style {
     Strikethrough(bool),
     Opacity(u8),
     FgColor(Color),
-    FgColorCfg(Option<u8>),
     BgColor(Color),
-    BgColorCfg(Option<u8>),
 }

@@ -105,14 +105,23 @@ impl Argument for Color {
 
     fn from_nums<T>(mut args: T, default: Option<Color>) -> Option<Color>
     where T: Iterator<Item=u64> {
-        match (args.next(), args.next(), args.next()) {
-            (Some(r), Some(g), Some(b)) => Some(Color(r as u8, g as u8, b as u8)),
-            _                           => default,
+        match args.next() {
+            Some(0) => Some(Color::Default),
+            Some(1) => args.next().map(|n| Color::Palette(n as u8)),
+            Some(2) => match (args.next(), args.next(), args.next()) {
+                (Some(r), Some(g), Some(b)) => Some(Color::True(r as u8, g as u8, b as u8)),
+                _                           => None
+            },
+            _       => default
         }
     }
 
     fn encode(&self) -> String {
-        format!("{:x}.{:x}.{:x}", self.0, self.1, self.2)
+        match *self {
+            Color::Default          => String::from("0"),
+            Color::Palette(n)       => format!("1.{:x}", n),
+            Color::True(r, g, b)    => format!("2.{:x}.{:x}.{:x}", r, g, b)
+        }
     }
 }
 
@@ -420,8 +429,6 @@ impl Argument for Style {
             Some(0x7)   => Some(Opacity(args.next().unwrap_or(0xff) as u8)),
             Some(0x8)   => Color::from_nums(args, None).map(FgColor),
             Some(0x9)   => Color::from_nums(args, None).map(BgColor),
-            Some(0xa)   => Some(FgColorCfg(args.next().map(|x| x as u8))),
-            Some(0xb)   => Some(BgColorCfg(args.next().map(|x| x as u8))),
             _           => default
         }
     }
@@ -437,10 +444,6 @@ impl Argument for Style {
             Opacity(n)          => format!("7.{:x}", n),
             FgColor(color)      => format!("8.{}", color.encode()),
             BgColor(color)      => format!("9.{}", color.encode()),
-            FgColorCfg(None)    => format!("a"),
-            FgColorCfg(Some(n)) => format!("a.{:x}", n),
-            BgColorCfg(None)    => format!("b"),
-            BgColorCfg(Some(n)) => format!("b.{:x}", n),
         }
     }
 
@@ -516,19 +519,19 @@ mod tests {
     ];
 
     static STYLE_TESTS: &'static [(Style, &'static str)] = &[
-        (Style::Underline(1), "1.1"),
-        (Style::Bold(true), "2.1"),
-        (Style::Italic(false), "3.0"),
-        (Style::Blink(false), "4.0"),
-        (Style::InvertColors(false), "5.0"),
-        (Style::Strikethrough(true), "6.1"),
-        (Style::Opacity(0x40), "7.40"),
-        (Style::FgColor(Color(0, 1, 0x19)), "8.0.1.19"),
-        (Style::BgColor(Color(0xff, 0xfe, 0xf)), "9.ff.fe.f"),
-        (Style::FgColorCfg(None), "a"),
-        (Style::FgColorCfg(Some(7)), "a.7"),
-        (Style::BgColorCfg(None), "b"),
-        (Style::BgColorCfg(Some(0xf)), "b.f"),
+        (Underline(1), "1.1"),
+        (Bold(true), "2.1"),
+        (Italic(false), "3.0"),
+        (Blink(false), "4.0"),
+        (InvertColors(false), "5.0"),
+        (Strikethrough(true), "6.1"),
+        (Opacity(0x40), "7.40"),
+        (FgColor(Color::True(0, 1, 0x19)), "8.2.0.1.19"),
+        (BgColor(Color::True(0xff, 0xfe, 0xf)), "9.2.ff.fe.f"),
+        (FgColor(Color::Default), "8.0"),
+        (FgColor(Color::Palette(7)), "8.1.7"),
+        (BgColor(Color::Default), "9.0"),
+        (BgColor(Color::Palette(0xf)), "9.1.f"),
     ];
 
     fn run_test<T: Argument + ::std::fmt::Debug>(strings: &str, args: &[T]) {
@@ -553,7 +556,7 @@ mod tests {
 
     #[test]
     fn color_argument() {
-        run_test("0.1.2;3.4.5", &[Color(0,1,2), Color(3,4,5)]);
+        run_test("2.0.1.2;2.3.4.5", &[Color::True(0,1,2), Color::True(3,4,5)]);
     }
 
     #[test]
