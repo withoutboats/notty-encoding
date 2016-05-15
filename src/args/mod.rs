@@ -18,7 +18,7 @@ pub use self::media::{MediaAlignment, MediaPosition};
 pub use self::movement::Movement;
 pub use self::region::Region;
 pub use self::settings::{BufferSettings, EchoSettings, InputSettings};
-pub use self::style::Style;
+pub use self::style::{Style, ConfigStyle, CodeGroup};
 
 pub trait Argument: Copy + Eq {
     fn from_nums<T>(T, Option<Self>) -> Option<Self> where T: Iterator<Item=u64>;
