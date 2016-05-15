@@ -1,8 +1,8 @@
 use std::cmp;
 
-use args::{Coords, SplitKind, ResizeRule};
-use args::SplitKind::*;
-use args::ResizeRule::*;
+use super::{Argument, Coords, SplitKind, ResizeRule};
+use super::SplitKind::*;
+use super::ResizeRule::*;
 
 /// A concrete, rectangular region of the screen.
 ///
@@ -137,6 +137,21 @@ impl Region {
         }
     }
 
+}
+
+impl Argument for Region {
+    fn from_nums<T>(mut args: T, default: Option<Region>) -> Option<Region>
+    where T: Iterator<Item=u64> {
+        match (args.next(), args.next(), args.next(), args.next()) {
+            (Some(l), Some(t), Some(r), Some(b)) => Some(Region::new(l as u32, t as u32,
+                                                                     r as u32, b as u32)),
+            _                                    => default
+        }
+    }
+
+    fn encode(&self) -> String {
+        format!("{:x}.{:x}.{:x}.{:x}", self.left, self.top, self.right, self.bottom)
+    }
 }
 
 
