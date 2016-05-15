@@ -58,7 +58,7 @@ impl Argument for Style {
 }
 
 /// Some means of identifying a preconfigured style provided by the user.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum ConfigStyle {
     Plain,
     CodeGroup(CodeGroup),
@@ -89,7 +89,7 @@ impl Default for ConfigStyle {
 }
 
 /// A kind of text found in source code, for syntax highlighting.
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum CodeGroup {
     Comment,
     Documentation,
