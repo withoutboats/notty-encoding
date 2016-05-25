@@ -86,6 +86,8 @@ impl Argument for EchoSettings {
 pub enum InputSettings {
     /// Ansi-compatible mode, boolean determines of "application" mode or not.
     Ansi(bool),
+    /// Bracketed-paste mode (on or off)
+    BracketedPasteMode(bool),
     /// Notty mode.
     Notty(()),
     LineBufferEcho(EchoSettings, BufferSettings),
@@ -109,6 +111,7 @@ impl Argument for InputSettings {
     fn encode(&self) -> String {
         match *self {
             Ansi(_)                         => String::from("1"),
+            BracketedPasteMode(_)           => unimplemented!(),
             Notty(_)                        => String::from("2"),
             LineBufferEcho(echo, buffer)    => format!("3.{}.{}", echo.encode(), buffer.encode()),
             ScreenEcho(echo)                => format!("4.{}", echo.encode()),
