@@ -1,4 +1,5 @@
 use std::cmp;
+use std::ops::Index;
 
 use super::{Argument, Coords, SplitKind, ResizeRule};
 use super::SplitKind::*;
@@ -137,6 +138,17 @@ impl Region {
         }
     }
 
+}
+
+// This implementation is so that regions can act as mocks of 2d arrays.
+impl Index<Coords> for Region {
+    type Output = ();
+
+    fn index(&self, idx: Coords) -> &() {
+        const NULL: &'static () = &();
+        assert!(self.contains(idx));
+        NULL
+    }
 }
 
 impl Argument for Region {
