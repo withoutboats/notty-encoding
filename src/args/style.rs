@@ -57,6 +57,8 @@ impl Argument for Style {
     }
 }
 
+const DEFAULT_CONFIG_STYLE: ConfigStyle = ConfigStyle::Plain;
+
 /// Some means of identifying a preconfigured style provided by the user.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
 pub enum ConfigStyle {
@@ -84,7 +86,7 @@ impl Argument for ConfigStyle {
 
 impl Default for ConfigStyle {
     fn default() -> ConfigStyle {
-        ConfigStyle::Plain
+        DEFAULT_CONFIG_STYLE
     }
 }
 
