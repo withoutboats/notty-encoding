@@ -57,7 +57,7 @@ impl Argument for Style {
     }
 }
 
-const DEFAULT_CONFIG_STYLE: ConfigStyle = ConfigStyle::Plain;
+pub const DEFAULT_CONFIG_STYLE: ConfigStyle = ConfigStyle::Plain;
 
 /// Some means of identifying a preconfigured style provided by the user.
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash, Ord, PartialOrd)]
