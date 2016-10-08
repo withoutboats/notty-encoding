@@ -117,6 +117,14 @@ impl Region {
         }
     }
 
+    pub fn resized(self, width: u32, height: u32) -> Region {
+        Region {
+            right: self.left + width,
+            bottom: self.top + height,
+            ..self
+        }
+    }
+
     pub fn split(self, kind: SplitKind, rule: ResizeRule) -> (SplitKind, Region, Region) {
         match (kind, rule) {
             (Horizontal(n), MaxLeftTop) | (Horizontal(n), Percentage)   => {
